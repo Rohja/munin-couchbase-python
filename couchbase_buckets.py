@@ -32,10 +32,18 @@ def calc_average_list(data):
 # CONFIG DISPLAY
 ###
 
+def config_order(entries):
+    order = ""
+    for entry in entries:
+        if order == "":
+            order = "graph_order"
+        order += " %s" % entry
+    return order
+
 def config_cache_miss(entries):
     print "multigraph couchbase_bucket_cache_miss"
     print "graph_title Couchbase Cache Miss for buckets"
-    print "graph_order cache"
+    print config_order([x['name'] for x in entries])
     # print "graph_args --base 1000"
     print "graph_vlabel Entry red from disk instead of cache"
     print "graph_category db"
@@ -44,12 +52,16 @@ def config_cache_miss(entries):
     for entry in entries:
         print "%s.min 0" % entry['name']
         print "%s.label count (%s/%s)" % (entry['name'], entry['name'], entry["bucketType"])
+        draw_type = "STACK"
+        if entry is entries[0]:
+            draw_type = "AREA"
+        print "%s.draw" % entry['name'], draw_type
     print ""
 
 def config_diskqueue_drain(entries):
     print "multigraph couchbase_bucket_diskqueue_drain"
     print "graph_title Couchbase Disk Queue Drain for buckets"
-    print "graph_order queue"
+    print config_order([x['name'] for x in entries])
     # print "graph_args --base 1000"
     print "graph_vlabel Disk operations pending in queue"
     print "graph_category db"
@@ -58,6 +70,10 @@ def config_diskqueue_drain(entries):
     for entry in entries:
         print "%s.min 0" % entry['name']
         print "%s.label operations (%s/%s)" % (entry['name'], entry['name'], entry["bucketType"])
+        draw_type = "STACK"
+        if entry is entries[0]:
+            draw_type = "AREA"
+        print "%s.draw" % entry['name'], draw_type
     print ""
 
 def display_config(config):
