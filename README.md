@@ -1,6 +1,14 @@
 # munin-couchbase-python
 Munin plugin for Couchbase using python-requests
 
+## Requirements
+
+You'll need to install python-requests with pip.
+
+```
+pip install requests
+```
+
 ## Installation
 
 Go to your /opt directory and clone this repository.
