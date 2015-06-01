@@ -55,7 +55,7 @@ def config_diskqueue_drain(entry):
     print "graph_info This graph shows the amount of entry waiting in queue to be wrote on disk"
     print ""
     print "queue.min 0"
-    print "queue.lavel operations"
+    print "queue.label operations"
     print ""
 
 def display_config(config):
