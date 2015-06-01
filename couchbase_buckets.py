@@ -32,54 +32,61 @@ def calc_average_list(data):
 # CONFIG DISPLAY
 ###
 
-def config_cache_miss(entry):
-    print "multigraph couchbase_bucket_cache_miss_%s" % entry['name']
-    print "graph_title Couchbase Cache Miss for bucket %s (%s)" % (entry['name'], entry["bucketType"])
+def config_cache_miss(entries):
+    print "multigraph couchbase_bucket_cache_miss"
+    print "graph_title Couchbase Cache Miss for buckets"
     print "graph_order cache"
     # print "graph_args --base 1000"
     print "graph_vlabel Entry red from disk instead of cache"
     print "graph_category db"
     print "graph_info This graph shows the amount of entry red from the disk instead of the cache"
     print ""
-    print "cache.min 0"
-    print "cache.label count"
+    for entry in entries:
+        print "%s.min 0" % entry['name']
+        print "%s.label count (%s/%s)" % (entry['name'], entry['name'], entry["bucketType"])
     print ""
 
-def config_diskqueue_drain(entry):
-    print "multigraph couchbase_bucket_diskqueue_drain_%s" % entry['name']
-    print "graph_title Couchbase Disk Queue Drain for bucket %s (%s)" % (entry['name'], entry["bucketType"])
+def config_diskqueue_drain(entries):
+    print "multigraph couchbase_bucket_diskqueue_drain"
+    print "graph_title Couchbase Disk Queue Drain for buckets"
     print "graph_order queue"
     # print "graph_args --base 1000"
     print "graph_vlabel Disk operations pending in queue"
     print "graph_category db"
     print "graph_info This graph shows the amount of entry waiting in queue to be wrote on disk"
     print ""
-    print "queue.min 0"
-    print "queue.label operations"
+    for entry in entries:
+        print "%s.min 0" % entry['name']
+        print "%s.label operations (%s/%s)" % (entry['name'], entry['name'], entry["bucketType"])
     print ""
 
 def display_config(config):
     obj_data = get_buckets_infos(config)
     #
-    for entry in obj_data:
-        config_cache_miss(entry)
-        config_diskqueue_drain(entry)
+    config_cache_miss(obj_data)
+    config_diskqueue_drain(obj_data)
 ###
 # VALUES DISPLAY
 ###
 
-def display_cache_miss(entry, name):
-    rate_list = entry['op']['samples']['ep_cache_miss_rate']
-    val = calc_average_list(rate_list)
-    print "multigraph couchbase_bucket_cache_miss_%s" % name
-    print "cache.value", val
+def display_cache_miss(config, entries):
+    print "multigraph couchbase_bucket_cache_miss"
+    for entry in entries:
+        name = entry['name']
+        bucket = get_bucket_infos(config, name)
+        rate_list = bucket['op']['samples']['ep_cache_miss_rate']
+        val = calc_average_list(rate_list)
+        print "%s.value" % name, val
     print ""
 
-def display_diskqueue_drain(entry, name):
-    rate_list = entry['op']['samples']['ep_diskqueue_drain']
-    val = calc_average_list(rate_list)
-    print "multigraph couchbase_bucket_diskqueue_drain_%s" % name
-    print "queue.value", val
+def display_diskqueue_drain(config, entries):
+    print "multigraph couchbase_bucket_diskqueue_drain"
+    for entry in entries:
+        name = entry['name']
+        bucket = get_bucket_infos(config, name)
+        rate_list = bucket['op']['samples']['ep_diskqueue_drain']
+        val = calc_average_list(rate_list)
+        print "%s.value" % name, val
     print ""
     
 
@@ -90,13 +97,8 @@ def display_diskqueue_drain(entry, name):
 def couchbase_buckets(config):
     obj_data = get_buckets_infos(config)
     #
-    #
-    for entry in obj_data:
-        entry_obj = get_bucket_infos(config, entry['name'])
-        # for i in entry_obj["op"]["samples"].keys():
-        #     print "-", i
-        # break
-        display_cache_miss(entry_obj, entry['name'])
+    display_cache_miss(config, obj_data)
+    display_diskqueue_drain(config, obj_data)
 
 if __name__ == "__main__":
     # Init config
