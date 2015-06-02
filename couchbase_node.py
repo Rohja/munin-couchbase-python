@@ -37,6 +37,18 @@ def display_config(config):
     print "items.min 0"
     print "items.label items"
     print ""
+    ### SPACE FOR DATA
+    print "multigraph couchbase_dataspace"
+    print "graph_title Couchbase space used by Data"
+    print "graph_order hdd ram"
+    print "graph_category db"
+    print ""
+    print "hdd.min 0"
+    print "hdd.label hdd"
+    print "ram.min 0"
+    print "ram.label ram"
+    print ""
+
 
 def couchbase_node(config):
     url = "http://%s:%s/pools/default" % (config['host'], config['port'])
@@ -54,7 +66,12 @@ def couchbase_node(config):
     curr_items = obj_data["nodes"][0]["interestingStats"]["curr_items"]
     print "multigraph couchbase_items"
     print "items.value", int(curr_items)
-    ####
+    #
+    hdd = obj_data['storageTotals']['hdd']['usedByData']
+    ram = obj_data['storageTotals']['ram']['usedByData']
+    print "multigraph couchbase_dataspace"
+    print "hdd.value", hdd
+    print "ram.value", ram
     sys.exit(0)
 
 if __name__ == "__main__":
