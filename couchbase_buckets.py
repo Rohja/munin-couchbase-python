@@ -9,13 +9,13 @@ import requests
 ###
 
 def get_buckets_infos(config):
-    url = "http://%s:%d/pools/default/buckets" % (config['host'], config['port'])
+    url = "http://%s:%s/pools/default/buckets" % (config['host'], config['port'])
     r = requests.get(url, auth=(config['username'], config['password']))
     obj_data = r.json()
     return obj_data
 
 def get_bucket_infos(config, name):
-    url = "http://%s:%d/pools/default/buckets/%s/stats" % (config['host'], config['port'], name)
+    url = "http://%s:%s/pools/default/buckets/%s/stats" % (config['host'], config['port'], name)
     r = requests.get(url, auth=(config['username'], config['password']))
     obj_data = r.json()
     return obj_data
@@ -119,7 +119,7 @@ def couchbase_buckets(config):
 if __name__ == "__main__":
     # Init config
     config = {'host':     os.environ.get('host',     '127.0.0.1'),
-              'port':     os.environ.get('port',      8091),
+              'port':     os.environ.get('port',     '8091'),
               'username': os.environ.get('username', 'admin'),
               'password': os.environ.get('password', 'password'),}
               

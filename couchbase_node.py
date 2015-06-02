@@ -39,7 +39,7 @@ def display_config(config):
     print ""
 
 def couchbase_node(config):
-    url = "http://%s:%d/pools/default" % (config['host'], config['port'])
+    url = "http://%s:%s/pools/default" % (config['host'], config['port'])
     r = requests.get(url, auth=(config['username'], config['password']))
     obj_data = r.json()
     #
@@ -60,7 +60,7 @@ def couchbase_node(config):
 if __name__ == "__main__":
     # Init config
     config = {'host':     os.environ.get('host',     '127.0.0.1'),
-              'port':     os.environ.get('port',      8091),
+              'port':     os.environ.get('port',     '8091'),
               'username': os.environ.get('username', 'admin'),
               'password': os.environ.get('password', 'password'),}
               
